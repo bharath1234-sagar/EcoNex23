@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoNex | Authentication</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+    .tab-active { background-color: #2563eb; color: #ffffff; font-weight: 700; shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2); }
+    .tab-inactive { background-color: #f1f5f9; color: #64748b; font-weight: 600; }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 via-slate-50 to-indigo-50">
+
+  <div class="max-w-md w-full bg-white rounded-3xl shadow-xl shadow-blue-500/10 border border-slate-200 overflow-hidden my-6">
+    <!-- Blue Header Banner -->
+    <div class="bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-700 p-8 text-white text-center relative overflow-hidden">
+      <div class="absolute -right-6 -bottom-8 w-28 h-28 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md text-3xl shadow-inner mb-3">
+        🌱
+      </div>
+      <h1 class="text-3xl font-extrabold tracking-tight">EcoNex</h1>
+      <p class="text-xs text-blue-100 font-semibold tracking-wider uppercase mt-1">Carbon Intelligence & Reduction OS</p>
+    </div>
+
+    <!-- Flash Notifications -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="px-8 pt-6">
+          {% for category, message in messages %}
+            <div class="p-3.5 rounded-xl text-xs font-semibold {{ 'bg-rose-50 text-rose-700 border border-rose-200' if category == 'error' else 'bg-emerald-50 text-emerald-700 border border-emerald-200' }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="p-8 space-y-6">
+      
+      <!-- Tab Switcher: Sign In vs Create Account -->
+      <div class="flex rounded-2xl p-1.5 bg-slate-100 gap-1.5">
+        <button id="signInTab" onclick="switchTab('signin')" class="flex-1 py-2.5 rounded-xl text-xs transition tab-active">
+          Sign In
+        </button>
+        <button id="registerTab" onclick="switchTab('register')" class="flex-1 py-2.5 rounded-xl text-xs transition tab-inactive">
+          Create Account
+        </button>
+      </div>
+
+      <!-- 1. SIGN IN FORM -->
+      <form id="signInForm" action="/auth/login" method="POST" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Email Address</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+              </svg>
+            </span>
+            <input type="email" name="email" value="bharath@gmail.com" required placeholder="name@gmail.com"
+                   class="w-full pl-10 pr-3.5 py-3 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Password</label>
+          <input type="password" name="password" value="password123" required placeholder="••••••••"
+                 class="w-full px-3.5 py-3 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+        </div>
+
+        <button type="submit"
+                class="w-full mt-2 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl shadow-md shadow-blue-500/20 transition">
+          Sign In to Dashboard →
+        </button>
+      </form>
+
+      <!-- 2. CREATE ACCOUNT FORM -->
+      <form id="registerForm" action="/auth/register" method="POST" class="space-y-3.5 hidden">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Full Name</label>
+          <input type="text" name="name" required placeholder="e.g. Darshan"
+                 class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Gmail / Email Address</label>
+          <input type="email" name="email" required placeholder="user@gmail.com"
+                 class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password</label>
+            <input type="password" name="password" required placeholder="••••••••"
+                   class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Confirm Password</label>
+            <input type="password" name="confirm_password" required placeholder="••••••••"
+                   class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Initial Persona Category</label>
+          <select name="category" class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 font-semibold text-slate-700">
+            <option value="City Resident">🚲 Urban Working Professional</option>
+            <option value="Household">🏡 Household / Family</option>
+            <option value="Student / Campus">🎓 Student & Campus Hosteller</option>
+            <option value="College / Institution">🏫 College / Organization Admin</option>
+            <option value="Farmer / Dairy Farm">🌾 Farmer & Dairy Producer</option>
+            <option value="Industry">🏭 Industrial / Manufacturing Plant</option>
+          </select>
+          <span class="text-[10px] text-slate-400 mt-0.5 block">You can change your category anytime in Profile Settings.</span>
+        </div>
+
+        <button type="submit"
+                class="w-full mt-2 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-md transition">
+          Create Account & Sign In ✓
+        </button>
+      </form>
+
+      <!-- Fast Demo Access -->
+      <div class="pt-4 border-t border-slate-100 space-y-2">
+        <a href="/auth/demo" class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-blue-200 bg-blue-50/60 hover:bg-blue-100 text-blue-700 text-xs font-bold transition">
+          <span>⚡</span> Quick Demo Login (Instant Access)
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tab) {
+      const signInTab = document.getElementById('signInTab');
+      const registerTab = document.getElementById('registerTab');
+      const signInForm = document.getElementById('signInForm');
+      const registerForm = document.getElementById('registerForm');
+
+      if (tab === 'signin') {
+        signInTab.className = 'flex-1 py-2.5 rounded-xl text-xs transition tab-active';
+        registerTab.className = 'flex-1 py-2.5 rounded-xl text-xs transition tab-inactive';
+        signInForm.classList.remove('hidden');
+        registerForm.classList.add('hidden');
+      } else {
+        signInTab.className = 'flex-1 py-2.5 rounded-xl text-xs transition tab-inactive';
+        registerTab.className = 'flex-1 py-2.5 rounded-xl text-xs transition tab-active';
+        signInForm.classList.add('hidden');
+        registerForm.classList.remove('hidden');
+      }
+    }
+
+    if (window.location.hash === '#register') {
+      switchTab('register');
+    }
+  </script>
+</body>
+</html>

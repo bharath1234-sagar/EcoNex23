@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoNex | {{ t.overview }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+    .nav-active { background-color: #eff6ff; color: #1d4ed8; font-weight: 600; border-right: 3px solid #2563eb; }
+    .chat-scroll::-webkit-scrollbar { width: 5px; }
+    .chat-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  </style>
+
+  
+  
+
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col lg:flex-row relative">
+
+  <!-- Left Sidebar (White with Royal Blue accents) -->
+  <aside class="w-full lg:w-72 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 shadow-sm">
+    <div>
+      <!-- Brand Logo -->
+      <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white text-xl shadow-md shadow-blue-500/20">
+            🌱
+          </div>
+          <div>
+            <div class="font-extrabold text-xl text-slate-900 tracking-tight">EcoNex</div>
+            <div class="text-[11px] font-semibold text-blue-600 uppercase tracking-wider">{{ t.brand_subtitle }}</div>
+          </div>
+        </a>
+        <span class="px-2 py-0.5 text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 rounded-md">2026</span>
+      </div>
+
+      <!-- Current Profile Card -->
+      <a href="/profile" class="block p-4 mx-4 my-4 bg-blue-50/70 border border-blue-200/80 hover:border-blue-400 rounded-2xl transition group">
+        <div class="flex items-center gap-3">
+          <img src="{{ user.picture }}" alt="Profile Avatar" class="w-12 h-12 rounded-full border-2 border-blue-400 object-cover shadow-sm group-hover:scale-105 transition">
+          <div class="overflow-hidden">
+            <h4 class="text-sm font-bold text-slate-900 truncate group-hover:text-blue-700 transition">{{ user.name }}</h4>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+              <span class="text-xs text-slate-500 truncate">{{ user.email }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="mt-3 pt-3 border-t border-blue-200/60 flex items-center justify-between">
+          <span class="text-xs font-medium text-slate-600">{{ t.active_role }}:</span>
+          <span class="text-xs font-bold px-2 py-0.5 bg-blue-600 text-white rounded-full flex items-center gap-1">
+            {{ current_profile.icon }} {{ current_profile.badge }} ⚙️
+          </span>
+        </div>
+      </a>
+
+      <!-- Navigation links -->
+      <nav class="px-3 space-y-1">
+        <a href="/" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm nav-active transition">
+          <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          {{ t.overview }}
+        </a>
+        <a href="/profile" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
+          <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+          {{ t.profile_page }}
+        </a>
+        <a href="#activity-logger" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
+          <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          {{ t.logger }}
+        </a>
+        <a href="#simulator" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
+          <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {{ t.simulator }}
+        </a>
+        <a href="#challenges-section" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
+          <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          {{ t.leaderboard }}
+        </a>
+      </nav>
+    </div>
+
+    <!-- Bottom Actions -->
+    <div class="p-4 border-t border-slate-100 space-y-2">
+      <div class="bg-blue-50/70 p-3 rounded-xl border border-blue-100 text-xs text-blue-900">
+        {{ t.quick_tip }}
+      </div>
+      <a href="/logout" class="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">
+        <span>🔒</span> {{ t.sign_out }}
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Dashboard Content -->
+  <main class="flex-1 p-4 lg:p-8 overflow-y-auto space-y-8">
+    
+    <!-- Top Bar with Language Selector -->
+    <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+      <div>
+        <div class="flex items-center gap-2 text-xs font-semibold text-blue-600 uppercase tracking-wider">
+          <span>{{ t.active_role }}</span>
+          <span>•</span>
+          <span>{{ current_profile.label }}</span>
+        </div>
+        <h2 class="text-2xl font-extrabold text-slate-900 mt-1">{{ t.command_center }}</h2>
+        <p class="text-xs md:text-sm text-slate-500 mt-0.5">{{ current_profile.desc }}</p>
+      </div>
+
+      <div class="flex items-center flex-wrap gap-3">
+        <!-- Language Switcher Form -->
+        <form action="/set_language" method="POST" class="flex items-center gap-1.5">
+          <label class="text-xs font-bold text-slate-600">🌐 {{ t.language }}:</label>
+          <select name="lang" onchange="this.form.submit()" class="px-3 py-1.5 text-xs font-bold bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-blue-700">
+            <option value="en" {{ 'selected' if current_lang == 'en' }}>English</option>
+            <option value="kn" {{ 'selected' if current_lang == 'kn' }}>ಕನ್ನಡ (Kannada)</option>
+            <option value="hi" {{ 'selected' if current_lang == 'hi' }}>हिन्दी (Hindi)</option>
+            <option value="ta" {{ 'selected' if current_lang == 'ta' }}>தமிழ் (Tamil)</option>
+            <option value="te" {{ 'selected' if current_lang == 'te' }}>తెలుగు (Telugu)</option>
+          </select>
+        </form>
+
+        <a href="/profile" class="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold rounded-xl border border-blue-200 transition">
+          ⚙️ Change Persona & Photo
+        </a>
+        <button onclick="exportDashboardReport()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-md shadow-blue-500/20 transition flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+          {{ t.export_report }}
+        </button>
+      </div>
+    </header>
+
+    <!-- Metrics Stat Cards -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+      <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ t.last_30_days }}</span>
+          <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">📅</div>
+        </div>
+        <div class="mt-3">
+          <div class="text-3xl font-extrabold text-slate-900">{{ monthly_kg }} <span class="text-sm font-semibold text-slate-400">kg CO₂e</span></div>
+          <div class="text-xs text-slate-500 mt-1">Tracked Period (Daily Log)</div>
+        </div>
+      </div>
+
+      <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ t.lifetime_emissions }}</span>
+          <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-sm">🌐</div>
+        </div>
+        <div class="mt-3">
+          <div class="text-3xl font-extrabold text-slate-900">{{ total_lifetime }} <span class="text-sm font-semibold text-slate-400">kg CO₂e</span></div>
+          <div class="text-xs text-slate-500 mt-1">Total cumulative footprint</div>
+        </div>
+      </div>
+
+      <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ t.verified_reductions }}</span>
+          <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-sm">📉</div>
+        </div>
+        <div class="mt-3">
+          <div class="text-3xl font-extrabold text-emerald-600">{{ total_saved }} <span class="text-sm font-semibold text-emerald-700/60">kg CO₂e</span></div>
+          <div class="text-xs text-emerald-700 font-medium mt-1">Diverted via actions</div>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-br from-blue-600 to-indigo-700 p-5 rounded-2xl text-white shadow-md">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-blue-200 uppercase tracking-wider">{{ t.benchmark }}</span>
+          <div class="w-8 h-8 rounded-xl bg-white/20 text-white flex items-center justify-center font-bold text-sm">🇮🇳</div>
+        </div>
+        <div class="mt-3">
+          <div class="text-3xl font-extrabold text-white">1,900 <span class="text-sm font-normal text-blue-200">kg/yr</span></div>
+          <div class="text-xs text-blue-100 mt-1">Avg Indian per-capita target</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1. ACTIVITY LOGGER & SIMULATOR (FIRST, BEFORE RECOMMENDATIONS) -->
+    <section id="activity-logger" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm lg:col-span-1">
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold">📝</div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900">{{ t.log_activity }}</h3>
+            <p class="text-xs text-slate-500">{{ t.log_subtitle }}</p>
+          </div>
+        </div>
+
+        <form action="/activity/add" method="POST" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">{{ t.select_activity }}</label>
+            <select name="activity_key" id="activity_key" onchange="updateUnitHint()" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              {% for field_id, label, unit, factor in current_profile.fields %}
+              <option value="{{ field_id }}" data-unit="{{ unit }}" data-factor="{{ factor }}">
+                {{ label }} ({{ factor }} kg/{{ unit }})
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <label class="block text-xs font-semibold text-slate-600 uppercase">{{ t.input_quantity }}</label>
+              <span id="unit_badge" class="text-xs font-bold text-blue-600">kWh</span>
+            </div>
+            <input type="number" step="any" name="quantity" required placeholder="e.g. 50" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Date</label>
+            <input type="date" name="day" value="2026-10-28" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          </div>
+
+          <button type="submit" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl shadow-md transition">
+            {{ t.compute_btn }}
+          </button>
+        </form>
+      </div>
+
+      <div id="simulator" class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm lg:col-span-2">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">⚡</div>
+            <div>
+              <h3 class="text-base font-bold text-slate-900">{{ t.sim_title }}</h3>
+              <p class="text-xs text-slate-500">{{ t.sim_subtitle }}</p>
+            </div>
+          </div>
+          <span class="text-xs font-bold px-2 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-md">Real-time & Persistent</span>
+        </div>
+
+        <div class="space-y-5">
+          <div>
+            <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+              <span>Switch Car Commute to Metro / Transit (Days/Month):</span>
+              <span id="slider1_val" class="text-blue-600 font-bold">{{ sim_data.slider1 if sim_data else 8 }} days</span>
+            </div>
+            <input type="range" min="0" max="30" value="{{ sim_data.slider1 if sim_data else 8 }}" id="slider1" oninput="runSimulation()" class="w-full accent-blue-600 cursor-pointer">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+              <span>Replace Halogens with 9W LEDs (Fixtures):</span>
+              <span id="slider2_val" class="text-blue-600 font-bold">{{ sim_data.slider2 if sim_data else 6 }} fixtures</span>
+            </div>
+            <input type="range" min="0" max="20" value="{{ sim_data.slider2 if sim_data else 6 }}" id="slider2" oninput="runSimulation()" class="w-full accent-blue-600 cursor-pointer">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+              <span>Compost Organic Waste (kg / week):</span>
+              <span id="slider3_val" class="text-blue-600 font-bold">{{ sim_data.slider3 if sim_data else 5 }} kg</span>
+            </div>
+            <input type="range" min="0" max="30" value="{{ sim_data.slider3 if sim_data else 5 }}" id="slider3" oninput="runSimulation()" class="w-full accent-blue-600 cursor-pointer">
+          </div>
+
+          <div class="mt-4 p-4 rounded-xl bg-gradient-to-r from-blue-50 via-indigo-50 to-emerald-50 border border-blue-200/80 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <div class="text-xs font-semibold text-slate-500 uppercase">Estimated Monthly Savings</div>
+              <div class="text-2xl font-extrabold text-blue-900">
+                <span id="sim_co2">{{ sim_data.saved_co2 if sim_data else 48.2 }}</span> kg CO₂e 
+                <span class="text-emerald-600 text-sm font-semibold">(₹<span id="sim_inr">{{ sim_data.saved_inr if sim_data else 1850 }}</span> saved)</span>
+              </div>
+            </div>
+            <button type="button" id="commitBtn" onclick="commitSimulationPlan()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-1.5">
+              <span id="commitText">{{ t.commit_plan }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. RECOMMENDATIONS BLOCK -->
+    <section id="recommendations-section" class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-base">🌱</div>
+            <h3 class="text-xl font-extrabold text-slate-900">{{ t.recommendations }}</h3>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">Tailored Plan</span>
+          </div>
+          <p class="text-xs md:text-sm text-slate-500 mt-1">Targeted steps based on your logged consumption streams.</p>
+        </div>
+        <span class="text-xs font-semibold px-3 py-1 bg-slate-100 text-slate-600 rounded-xl">Based on Your Logs</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {% for rec in recommendations %}
+        <div class="border-2 border-slate-200 hover:border-blue-400 bg-slate-50/50 hover:bg-white rounded-2xl p-5 shadow-sm space-y-4 transition flex flex-col justify-between group">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-3xl">{{ rec.icon }}</span>
+              <span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider
+                {{ 'bg-rose-100 text-rose-700 border border-rose-200' if rec.priority == 'HIGH' else
+                   'bg-amber-100 text-amber-700 border border-amber-200' if rec.priority == 'MEDIUM' else
+                   'bg-emerald-100 text-emerald-700 border border-emerald-200' if rec.priority == 'EASY WIN' else
+                   'bg-indigo-100 text-indigo-700 border border-indigo-200' }}">
+                {{ rec.priority }}
+              </span>
+            </div>
+            
+            <h4 class="font-extrabold text-slate-900 text-sm group-hover:text-blue-600 transition">{{ rec.title }}</h4>
+            <p class="text-xs text-slate-600 leading-relaxed">{{ rec.desc }}</p>
+          </div>
+
+          <div class="pt-4 border-t border-slate-200/70 space-y-3">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-slate-500 font-medium">Impact:</span>
+              <span class="font-bold text-emerald-700">{{ rec.potential_co2 }}</span>
+            </div>
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-slate-500 font-medium">Savings:</span>
+              <span class="font-bold text-blue-700">{{ rec.potential_money }}</span>
+            </div>
+
+            {% if rec.priority != 'GET STARTED' %}
+            <form action="/action/add" method="POST" onsubmit="handleRecAdopt(event, this)">
+              <input type="hidden" name="title" value="{{ rec.action_title }}">
+              <input type="hidden" name="category" value="{{ rec.category }}">
+              <input type="hidden" name="saved" value="{{ rec.action_saved }}">
+              <input type="hidden" name="note" value="Adopted from personalized recommendations engine">
+              <button type="submit" class="w-full py-2.5 px-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center justify-center gap-1.5">
+                <span>Adopt Recommendation ✓</span>
+              </button>
+            </form>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- 3. CHALLENGES & BADGES BLOCK -->
+    <section id="challenges-section" class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="flex items-center gap-2">
+            <h3 class="text-xl font-extrabold text-slate-900">{{ t.challenges_title }}</h3>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700">Gamified</span>
+          </div>
+          <p class="text-xs md:text-sm text-slate-500 mt-1">{{ t.challenges_sub }}</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {% for ch in challenges %}
+        <div class="border-2 {{ 'border-emerald-200 bg-emerald-50/20' if ch.done else 'border-slate-200 bg-white' }} rounded-2xl p-5 shadow-sm space-y-4 hover:border-blue-300 transition">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex items-start gap-3">
+              <span class="text-3xl mt-0.5">{{ ch.icon }}</span>
+              <div>
+                <h4 class="text-base font-extrabold text-slate-900 {{ 'line-through text-slate-400' if ch.done }}">{{ ch.title }}</h4>
+                <p class="text-xs text-slate-500 mt-0.5 leading-relaxed">{{ ch.desc }}</p>
+              </div>
+            </div>
+
+            <form action="/challenge/toggle" method="POST" class="shrink-0">
+              <input type="hidden" name="title" value="{{ ch.title }}">
+              {% if ch.done %}
+              <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-1">
+                Completed ✓
+              </button>
+              {% else %}
+              <button type="submit" class="px-3 py-2 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 font-bold text-xs rounded-xl transition">
+                + Mark Done
+              </button>
+              {% endif %}
+            </form>
+          </div>
+
+          <div class="pt-3 border-t border-slate-100 space-y-2">
+            <span class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Log Activities for this Challenge:</span>
+            <div class="grid grid-cols-1 gap-1.5">
+              {% for act in ch.activities %}
+              <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/70 flex items-center justify-between text-xs hover:bg-blue-50/50 hover:border-blue-200 transition">
+                <div>
+                  <span class="font-bold text-slate-800">{{ act.title }}</span>
+                  <span class="text-[10px] text-emerald-600 font-semibold ml-1.5">Saves {{ act.saving }}</span>
+                </div>
+                <form action="/challenge/quick_log" method="POST" onsubmit="handleChallengeLog(event, this)">
+                  <input type="hidden" name="title" value="{{ act.title }}">
+                  <input type="hidden" name="category" value="{{ act.cat }}">
+                  <input type="hidden" name="saved" value="{{ act.val }}">
+                  <button type="submit" class="px-2.5 py-1 bg-white hover:bg-emerald-600 hover:text-white border border-slate-200 rounded-lg text-[11px] font-bold text-slate-700 transition">
+                    + Log
+                  </button>
+                </form>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- 4. EMISSION SOURCE BREAKDOWN (VIBRANT MULTI-COLORS, ZERO INITIAL STATE) -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-base font-bold text-slate-900">Emission Source Breakdown</h3>
+          <span class="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg">Category Stream</span>
+        </div>
+        <div class="h-64 flex items-center justify-center">
+          <canvas id="sourceChart"></canvas>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-base font-bold text-slate-900">Emissions vs Targets (kg CO₂e)</h3>
+          <span class="text-xs font-semibold px-2.5 py-1 bg-blue-50 text-blue-700 rounded-lg">Comparative Benchmarks</span>
+        </div>
+        <div class="h-64 flex items-center justify-center">
+          <canvas id="benchmarkChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. LEADERBOARD & AUDIT LOG TABLE -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm lg:col-span-1">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="text-base font-bold text-slate-900">{{ t.community_board }}</h3>
+            <p class="text-xs text-slate-500">Benchmarked peers</p>
+          </div>
+          <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md">Top</span>
+        </div>
+
+        <div class="overflow-hidden border border-slate-200 rounded-xl">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
+              <tr>
+                <th class="p-3">Rank & Entity</th>
+                <th class="p-3 text-right">Points</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              {% for row in leaderboard %}
+              <tr class="{{ 'bg-blue-50/70 font-semibold text-blue-900' if row.you else 'hover:bg-slate-50' }}">
+                <td class="p-3 flex items-center gap-2">
+                  <span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold {{ 'bg-amber-400 text-slate-900' if loop.index == 1 else 'bg-slate-200 text-slate-700' }}">{{ loop.index }}</span>
+                  <div class="truncate">
+                    <div>{{ row.name }}</div>
+                    <div class="text-[10px] text-slate-400">{{ row.category }}</div>
+                  </div>
+                </td>
+                <td class="p-3 text-right font-extrabold text-blue-700">{{ row.points }} pts</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm lg:col-span-2">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-base font-bold text-slate-900">{{ t.audit_log }}</h3>
+          
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
+              <tr>
+                <th class="p-3">Date</th>
+                <th class="p-3">Item Breakdown</th>
+                <th class="p-3 text-right">Emissions (kg CO₂e)</th>
+                <th class="p-3 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              {% for r in rows %}
+              <tr class="hover:bg-slate-50">
+                <td class="p-3 font-medium text-slate-600">{{ r.day }}</td>
+                <td class="p-3 text-slate-700 font-medium">{{ r.summary }}</td>
+                <td class="p-3 text-right font-bold text-slate-900">{{ r.total }}</td>
+                <td class="p-3 text-right">
+                  <form action="/delete/activity/{{ r.id }}" method="POST" onsubmit="return confirm('Remove log entry?');">
+                    <button type="submit" class="text-rose-600 hover:text-rose-800 font-bold">Remove</button>
+                  </form>
+                </td>
+              </tr>
+              {% else %}
+              <tr>
+                <td colspan="4" class="p-4 text-center text-slate-400">No entries logged yet. Record your first footprint above!</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    async function handleRecAdopt(e, form) {
+      e.preventDefault();
+      const btn = form.querySelector('button');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<span>Saving...</span>';
+      btn.disabled = true;
+
+      try {
+        const formData = new FormData(form);
+        const res = await fetch('/action/add', {
+          method: 'POST',
+          headers: { 'X-Requested-With': 'XMLHttpRequest' },
+          body: formData
+        });
+
+        if (res.ok) {
+          btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+          btn.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
+          btn.innerHTML = '<span>Adopted Successfully ✓</span>';
+          setTimeout(() => { window.location.reload(); }, 1200);
+        } else {
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+        }
+      } catch (err) {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    }
+
+    async function handleChallengeLog(e, form) {
+      e.preventDefault();
+      const btn = form.querySelector('button');
+      btn.innerHTML = '✓ Logged';
+      btn.classList.add('bg-emerald-600', 'text-white');
+      try {
+        const formData = new FormData(form);
+        await fetch('/challenge/quick_log', {
+          method: 'POST',
+          headers: { 'X-Requested-With': 'XMLHttpRequest' },
+          body: formData
+        });
+        setTimeout(() => { window.location.reload(); }, 1000);
+      } catch(err) {
+        window.location.reload();
+      }
+    }
+
+    function updateUnitHint() {
+      const select = document.getElementById('activity_key');
+      const opt = select.options[select.selectedIndex];
+      const unit = opt.getAttribute('data-unit');
+      document.getElementById('unit_badge').innerText = unit;
+    }
+    updateUnitHint();
+
+    let simSaveTimeout = null;
+    function runSimulation() {
+      const s1 = parseInt(document.getElementById('slider1').value) || 0;
+      const s2 = parseInt(document.getElementById('slider2').value) || 0;
+      const s3 = parseInt(document.getElementById('slider3').value) || 0;
+
+      document.getElementById('slider1_val').innerText = s1 + ' days';
+      document.getElementById('slider2_val').innerText = s2 + ' fixtures';
+      document.getElementById('slider3_val').innerText = s3 + ' kg';
+
+      const transitSave = s1 * 1.35;
+      const ledSave = s2 * 3.81;
+      const compostSave = (s3 * 4) * 0.40;
+
+      const totalCO2 = Math.round((transitSave + ledSave + compostSave) * 10) / 10;
+      const inrSave = Math.round((s1 * 120) + (s2 * 45) + (s3 * 20));
+
+      document.getElementById('sim_co2').innerText = totalCO2;
+      document.getElementById('sim_inr').innerText = inrSave.toLocaleString();
+
+      localStorage.setItem('econex_s1', s1);
+      localStorage.setItem('econex_s2', s2);
+      localStorage.setItem('econex_s3', s3);
+    }
+
+    async function commitSimulationPlan() {
+      const btn = document.getElementById('commitBtn');
+      const txt = document.getElementById('commitText');
+      const co2 = parseFloat(document.getElementById('sim_co2').innerText) || 48.2;
+
+      txt.innerText = 'Committing...';
+      btn.disabled = true;
+
+      try {
+        const formData = new FormData();
+        formData.append('title', 'Adopted What-If Reduction Plan');
+        formData.append('category', 'Efficiency');
+        formData.append('saved', co2);
+        formData.append('note', 'Committed via interactive reduction engine');
+
+        const res = await fetch('/action/add', {
+          method: 'POST',
+          headers: { 'X-Requested-With': 'XMLHttpRequest' },
+          body: formData
+        });
+
+        if (res.ok) {
+          txt.innerText = 'Committed ✓';
+          setTimeout(() => { window.location.reload(); }, 1500);
+        } else {
+          txt.innerText = 'Commit Failed';
+          btn.disabled = false;
+        }
+      } catch (err) {
+        window.location.reload();
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedS1 = localStorage.getItem('econex_s1');
+      const savedS2 = localStorage.getItem('econex_s2');
+      const savedS3 = localStorage.getItem('econex_s3');
+
+      if (savedS1 !== null) document.getElementById('slider1').value = savedS1;
+      if (savedS2 !== null) document.getElementById('slider2').value = savedS2;
+      if (savedS3 !== null) document.getElementById('slider3').value = savedS3;
+
+      runSimulation();
+    });
+
+    const streamData = {{ stream_totals | tojson }};
+    const hasData = Object.keys(streamData).length > 0;
+    const labels = hasData ? Object.keys(streamData) : ['No Data Logged Yet'];
+    const values = hasData ? Object.values(streamData) : [1];
+
+    new Chart(document.getElementById('sourceChart'), {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: values,
+          backgroundColor: hasData ? ['#2563eb', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#0ea5e9'] : ['#e2e8f0'],
+          borderWidth: 2,
+          borderColor: '#ffffff'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('benchmarkChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Your Footprint (Annualized)', 'India Avg Per Capita', 'Global 2030 Target'],
+        datasets: [{
+          label: 'kg CO₂e per Year',
+          data: [Math.max(300, {{ monthly_kg }} * 12), 1900, 2100],
+          backgroundColor: ['#2563eb', '#94a3b8', '#10b981'],
+          borderRadius: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+          x: { grid: { display: false } }
+        },
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
